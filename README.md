@@ -198,3 +198,10 @@ Ce script permet un mouvement fluide, continu et relatif des moteurs, à la mani
 Gestion des entrées : Utilise la bibliothèque pynput pour écouter les événements globaux du clavier (Pression et Relâchement de touche).
 
 Comportement : Tant qu'une touche est maintenue enfoncée, la position du moteur s'incrémente ou se décrémente en continu. Dès que la touche est relâchée, le mouvement s'arrête net.
+
+Mécaniques Communes
+Les deux versions reposent sur des piliers techniques communs pour assurer la fluidité :
+
+Keep-Alive Asynchrone : Un thread fonctionnant en arrière-plan renvoie la commande HB1 toutes les 2 secondes. Cela maintient la session active et empêche Eilik de repasser en mode autonome à cause d'une inactivité.
+
+Interface Console Dynamique : L'affichage utilise les séquences d'échappement ANSI (\r pour le retour chariot et \033[K pour effacer la ligne) pour rafraîchir le statut de la commande en temps réel sur une seule ligne, évitant d'inonder le terminal.
