@@ -183,7 +183,18 @@ Le robot possède 4 servomoteurs adressables individuellement. La position centr
 
 ## 🧠 Fonctionnement du Contrôleur Interactif (V15)
 
-Le script de contrôle interactif repose sur trois piliers techniques :
-1. **Keep-Alive Asynchrone :** Un thread fonctionnant en arrière-plan renvoie la commande `HB1` toutes les 2 secondes. Cela maintient la session active et empêche Eilik de repasser en mode autonome.
-2. **Entrée Clavier Non-Bloquante :** L'utilisation des bibliothèques systèmes (`termios` et `tty` sous macOS/Linux) permet d'intercepter les frappes au clavier instantanément, sans avoir à valider par la touche "Entrée".
-3. **Interface Console Dynamique :** L'affichage utilise les séquences d'échappement ANSI (`\r` pour le retour chariot et `\033[K` pour effacer la ligne) pour rafraîchir le statut de la commande en temps réel sur une seule ligne.
+Le projet propose deux scripts de contrôle distincts pour s'adapter à différents styles de pilotage :
+
+1. Positions Fixes (v15.py)
+Ce script déclenche des positions de moteurs spécifiques et prédéfinies à chaque pression de touche.
+
+Gestion des entrées : Utilise les bibliothèques systèmes (termios et tty sous macOS/Linux) pour intercepter les frappes instantanément sans avoir à valider par "Entrée".
+
+Comportement : Une pression unique déplace le moteur vers une valeur exacte mappée (ex: 500, 1500, 2500). Il faut "spammer" les touches pour enchaîner les positions.
+
+2. Mouvement Continu (v18.py)
+Ce script permet un mouvement fluide, continu et relatif des moteurs, à la manière d'une manette de jeu vidéo.
+
+Gestion des entrées : Utilise la bibliothèque pynput pour écouter les événements globaux du clavier (Pression et Relâchement de touche).
+
+Comportement : Tant qu'une touche est maintenue enfoncée, la position du moteur s'incrémente ou se décrémente en continu. Dès que la touche est relâchée, le mouvement s'arrête net.
