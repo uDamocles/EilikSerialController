@@ -9,32 +9,32 @@ PORT_MAC = '/dev/tty.usbmodem21301'
 BAUD_RATE = 125000
 HB1 = bytes.fromhex("aa aa aa 0a 00 61 e4 c6 f1 ca 83 ff ad")
 
-# Limites des moteurs et taille du pas (vitesse)
+# Motor limits and step size (speed)
 MIN_POS = 0
 MAX_POS = 3000
-STEP = 25  # Réduit à 50 pour un mouvement plus doux en maintien continu
+STEP = 25  # Reduced to 25 for smoother continuous movement
 
-# État actuel des moteurs (initialisés à 1500, au milieu)
+# Current motor positions (initialized at 1500, the center point)
 current_positions = {
-    1: 1500, # Bras Droit
-    2: 1500, # Bras Gauche
-    3: 1500, # Buste
-    4: 1500  # Tête
+    1: 1500, # Right Arm
+    2: 1500, # Left Arm
+    3: 1500, # Torso
+    4: 1500  # Head
 }
 
-# Configuration des touches
+# Key configuration
 COMMANDS = {
-    'z': ("Tête Gauche", 4, STEP),
-    's': ("Tête Droite", 4, -STEP),
-    'e': ("Bras G Haut", 2, STEP),
-    'd': ("Bras G Bas", 2, -STEP),
-    'r': ("Bras D Haut", 1, -STEP),
-    'f': ("Bras D Bas", 1, STEP),
-    't': ("Buste Gauche", 3, STEP),
-    'g': ("Buste Droit", 3, -STEP),
+    'z': ("Head Left", 4, STEP),
+    's': ("Head Right", 4, -STEP),
+    'e': ("Left Arm Up", 2, STEP),
+    'd': ("Left Arm Down", 2, -STEP),
+    'r': ("Right Arm Up", 1, -STEP),
+    'f': ("Right Arm Down", 1, STEP),
+    't': ("Torso Left", 3, STEP),
+    'g': ("Torso Right", 3, -STEP),
 }
 
-# Set contenant les touches actuellement maintenues enfoncées
+# Set containing currently held keys
 active_keys = set()
 running = True
 
@@ -49,7 +49,7 @@ def keep_alive(ser):
         ser.write(HB1)
         time.sleep(2.0)
 
-# --- GESTION DU CLAVIER (PYNPUT) ---
+# --- KEYBOARD MANAGEMENT (PYNPUT) ---
 def on_press(key):
     global running
     try:
@@ -72,19 +72,19 @@ def on_release(key):
         pass
 
 def display_menu():
-    print("\n--- EILIK CONTROL MENU (MAINTIEN CONTINU TEMPS RÉEL) ---")
-    print("[Z/S] Tête      [E/D] Bras Gauche")
-    print("[R/F] Bras Droit[T/G] Buste")
-    print("[0] RESET       [!] Quit")
+    print("\n--- EILIK CONTROL MENU (REAL-TIME CONTINUOUS HOLD) ---")
+    print("[Z/S] Head        [E/D] Left Arm")
+    print("[R/F] Right Arm   [T/G] Torso")
+    print("[0] RESET         [!] Quit")
     print("------------------------------------------------------")
-    print("Clique sur cette fenêtre de terminal pour piloter Eilik.")
+    print("Click on this terminal window to pilot Eilik.")
 
 def main():
     global running
     try:
         ser = serial.Serial(PORT_MAC, BAUD_RATE, timeout=1)
     except serial.SerialException as e:
-        print(f"Erreur de connexion : {e}")
+        print(f"Connection error: {e}")
         return
 
     ser.rts = False; ser.dtr = True; time.sleep(1)
@@ -96,35 +96,35 @@ def main():
     key = rep[6:11] if len(rep) >= 11 else None
 
     if not key:
-        print("Erreur: Impossible d'obtenir la clé de session d'Eilik.")
+        print("Error: Could not obtain Eilik session key.")
         ser.close()
         return
 
-    # Lancement du Heartbeat
+    # Start Heartbeat
     threading.Thread(target=keep_alive, args=(ser,), daemon=True).start()
 
-    # Lancement de l'écouteur de clavier pynput
+    # Start pynput keyboard listener
     listener = keyboard.Listener(on_press=on_press, on_release=on_release)
     listener.start()
 
     display_menu()
 
-    # Boucle de jeu (Game Loop)
+    # Game Loop
     while running:
         status_msgs = []
 
-        # Reset demandé
+        # Reset requested
         if '0' in active_keys:
-            active_keys.discard('0') # On ne le fait qu'une fois
+            active_keys.discard('0') # Only perform once
             for motor_id in current_positions.keys():
                 current_positions[motor_id] = 1500
                 ser.write(build_frame(key, motor_id, 1500))
                 time.sleep(0.0125)
-            sys.stdout.write("\r\033[K-> Reset complet effectué.")
+            sys.stdout.write("\r\033[K-> Full reset performed.")
             sys.stdout.flush()
             continue
 
-        # Application des mouvements continus
+        # Apply continuous movements
         for k in list(active_keys):
             if k in COMMANDS:
                 name, motor_id, delta = COMMANDS[k]
@@ -136,15 +136,15 @@ def main():
                     ser.write(build_frame(key, motor_id, new_pos))
                     status_msgs.append(f"{name}:{new_pos}")
 
-        # Affichage
+        # Display status
         if status_msgs:
             sys.stdout.write("\r\033[K-> " + " | ".join(status_msgs))
             sys.stdout.flush()
 
-        # Vitesse de rafraîchissement (0.05s = 20 Hz)
+        # Refresh rate (0.01s = 100 Hz)
         time.sleep(0.01)
 
-    print("\nDéconnexion d'Eilik...")
+    print("\nDisconnecting from Eilik...")
     listener.stop()
     ser.close()
 
