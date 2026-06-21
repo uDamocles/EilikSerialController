@@ -12,13 +12,24 @@ This project provides a custom control system for the **Eilik robot**. By intera
 
 > ⚠️ **Project Status & Roadmap:** Currently, this is a very basic program focused exclusively on managing the servomotors. Future development goals include expanding support to control the screen display, the microphone, and the loudspeaker.
 
-## ⚙️ Features
-* **Direct Hardware Control:** Bypass the official app to send raw hexadecimal frames.
-* **Anti-Replay Bypass:** Automated handshake and dynamic session token extraction.
-* **Real-Time Responsiveness:** Non-blocking keyboard inputs for immediate motor reaction.
+
+## ⚙️ Features 
+* **Direct Hardware Control:** Bypass the official app to send raw hexadecimal frames. 
+* **Anti-Replay Bypass:** Automated handshake and dynamic session token extraction. 
+* **Real-Time Responsiveness:** Non-blocking keyboard inputs for immediate motor reaction. 
 * **Dynamic Console Interface:** Clean, single-line status updates without terminal spam.
 
 ---
+
+## 📦 Installation & Prerequisites
+
+This project requires Python 3 and a few external libraries. You can install the required dependencies using `pip`:
+
+```bash
+# Install required libraries
+pip3 install pyserial pynput
+```
+_Note: `tty`, `termios`, `sys`, `time`, and `threading` are built-in Python libraries and do not require manual installation._
 
 ## 📡 Communication Architecture
 
@@ -59,42 +70,35 @@ The robot features 4 individually addressable servomotors. The default resting p
 
 ---
 
-## ⌨️ Control Menu Mapping
+## 🧠 Interactive Controller Logic
 
-The interactive script binds keyboard keys to specific motor positions for real-time puppeteering. Here is the complete list of available commands:
+The project provides two distinct control scripts to suit different piloting styles:
 
-    --- EILIK CONTROL MENU ---
-    [a] Left Arm High
-    [z] Left Arm 66
-    [e] Left Arm Middle
-    [r] Left Arm 33
-    [t] Left Arm Low
-    [y] Right Arm High
-    [u] Right Arm 66
-    [i] Right Arm Middle
-    [o] Right Arm 33
-    [p] Right Arm Low
-    [q] Head Left
-    [s] Head Mid-Left
-    [d] Head Middle
-    [f] Head Mid-Right
-    [g] Head Right
-    [w] Torso Left
-    [x] Torso Mid-Left
-    [c] Torso Middle
-    [v] Torso Mid-Right
-    [b] Torso Right
-    [0] FULL RESET (Middle)
-    [!] Quit
+### 1. Fixed Positions (`v15.py`)
 
----
+This script triggers specific, pre-defined motor positions with a single keystroke.
 
-## 🧠 Interactive Controller Logic (V15)
+-   **Input handling:** Relies on system-level libraries (`termios` and `tty` on macOS/Linux) to capture keystrokes instantly without needing to press "Enter".
+    
+-   **Behavior:** Pressing a key once moves the motor to an exact mapped value (e.g., 500, 1500, 2500).
+    
 
-The interactive control script relies on three technical pillars to ensure fluidity:
-1. **Asynchronous Keep-Alive:** A background thread periodically sends the `HB1` command every 2 seconds. This keeps the connection alive and prevents Eilik from reverting to its autonomous mode due to an inactivity time-out.
-2. **Non-Blocking Input:** By using system-level libraries (`termios` and `tty` on macOS/Linux), the script captures keystrokes instantly, eliminating the need to press the "Enter" key after each command.
-3. **Dynamic Console Interface:** The display leverages ANSI escape sequences (`\r` for carriage return and `\033[K` to clear the line) to dynamically update the execution status on a single line.
+### 2. Continuous Movement (`v18.py`)
+
+This script allows for smooth, continuous, relative motor movement, much like a video game joystick.
+
+-   **Input handling:** Uses the `pynput` library to listen for global keyboard events (Key Press and Key Release).
+    
+-   **Behavior:** As long as a specific key is held down, the motor's position increments or decrements continuously. When the key is released, the movement stops immediately.
+    
+
+### Shared Core Mechanics
+
+Both versions rely on common technical pillars to ensure fluidity:
+
+-   **Asynchronous Keep-Alive:** A background thread periodically sends the `HB1` command every 2 seconds. This keeps the connection alive and prevents Eilik from reverting to its autonomous mode due to an inactivity time-out.
+    
+-   **Dynamic Console Interface:** The display leverages ANSI escape sequences (`\r` for carriage return and `\033[K` to clear the line) to dynamically update the execution status on a single line.
 
 <br>
 
@@ -110,11 +114,31 @@ Ce projet fournit un système de contrôle personnalisé pour le **robot Eilik**
 
 > ⚠️ **État du projet & Feuille de route :** Pour l'instant, il s'agit d'un programme très basique qui se concentre exclusivement sur la gestion des servomoteurs. L'objectif futur est d'étendre ses capacités pour piloter également l'affichage sur l'écran, le microphone ainsi que le haut-parleur.
 
+
 ## ⚙️ Fonctionnalités
-* **Contrôle Matériel Direct :** Contournement de l'application officielle via l'envoi de trames hexadécimales brutes.
-* **Bypass Anti-Rejeu :** Handshake automatisé et extraction dynamique du jeton de session.
-* **Réactivité Temps Réel :** Entrées clavier non bloquantes pour une réaction immédiate des moteurs.
-* **Interface Console Dynamique :** Mise à jour propre du statut sur une seule ligne.
+
+-   **Contrôle Matériel Direct :** Contournement de l'application officielle via l'envoi de trames hexadécimales brutes.
+    
+-   **Bypass Anti-Rejeu :** Handshake automatisé et extraction dynamique du jeton de session.
+    
+-   **Réactivité Temps Réel :** Entrées clavier non bloquantes pour une réaction immédiate des moteurs.
+    
+-   **Interface Console Dynamique :** Mise à jour propre du statut sur une seule ligne.
+    
+
+## 📦 Installation & Prérequis
+
+Ce projet nécessite Python 3 ainsi que quelques bibliothèques externes. Vous pouvez installer les dépendances requises à l'aide de `pip` :
+
+Bash
+
+```
+# Installation des librairies requises
+pip3 install pyserial pynput
+
+```
+
+_Note : `tty`, `termios`, `sys`, `time`, et `threading` sont des bibliothèques Python natives et ne nécessitent aucune installation manuelle._
 
 ---
 
@@ -154,36 +178,6 @@ Le robot possède 4 servomoteurs adressables individuellement. La position centr
 | **Bras Gauche** | `2` | 500 | 1500 | 2500 |
 | **Buste** | `3` | 500 | 1500 | 2500 |
 | **Tête** | `4` | 2500 | 1500 | 500 |
-
----
-
-## ⌨️ Mapping des Touches (Menu)
-
-Le script interactif associe les touches du clavier à des positions de moteurs spécifiques pour un pilotage en temps réel. Voici la liste complète des commandes :
-
-    --- MENU DE CONTRÔLE EILIK ---
-    [a] Bras Gauche Haut
-    [z] Bras Gauche 66
-    [e] Bras Gauche Milieu
-    [r] Bras Gauche 33
-    [t] Bras Gauche Bas
-    [y] Bras Droit Haut
-    [u] Bras Droit 66
-    [i] Bras Droit Milieu
-    [o] Bras Droit 33
-    [p] Bras Droit Bas
-    [q] Tête Gauche
-    [s] Tête Milieu-Gauche
-    [d] Tête Milieu
-    [f] Tête Milieu-Droite
-    [g] Tête Droite
-    [w] Buste Gauche
-    [x] Buste Milieu-Gauche
-    [c] Buste Milieu
-    [v] Buste Milieu-Droite
-    [b] Buste Droite
-    [0] RESET COMPLET (Milieu)
-    [!] Quitter
 
 ---
 
