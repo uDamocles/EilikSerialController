@@ -185,19 +185,23 @@ Le robot possède 4 servomoteurs adressables individuellement. La position centr
 
 Le projet propose deux scripts de contrôle distincts pour s'adapter à différents styles de pilotage :
 
-1. Positions Fixes (v15.py)
+### 1. Positions Fixes (`v15.py`)
+
 Ce script déclenche des positions de moteurs spécifiques et prédéfinies à chaque pression de touche.
 
-Gestion des entrées : Utilise les bibliothèques systèmes (termios et tty sous macOS/Linux) pour intercepter les frappes instantanément sans avoir à valider par "Entrée".
+-   **Gestion des entrées :** Utilise les bibliothèques systèmes (`termios` et `tty` sous macOS/Linux) pour intercepter les frappes instantanément sans avoir à valider par "Entrée".
+    
+-   **Comportement :** Une pression unique déplace le moteur vers une valeur exacte mappée (ex: 500, 1500, 2500). Il faut "spammer" les touches pour enchaîner les positions.
+    
 
-Comportement : Une pression unique déplace le moteur vers une valeur exacte mappée (ex: 500, 1500, 2500). Il faut "spammer" les touches pour enchaîner les positions.
+### 2. Mouvement Continu (`v18.py`)
 
-2. Mouvement Continu (v18.py)
 Ce script permet un mouvement fluide, continu et relatif des moteurs, à la manière d'une manette de jeu vidéo.
 
-Gestion des entrées : Utilise la bibliothèque pynput pour écouter les événements globaux du clavier (Pression et Relâchement de touche).
-
-Comportement : Tant qu'une touche est maintenue enfoncée, la position du moteur s'incrémente ou se décrémente en continu. Dès que la touche est relâchée, le mouvement s'arrête net.
+-   **Gestion des entrées :** Utilise la bibliothèque `pynput` pour écouter les événements globaux du clavier (Pression et Relâchement de touche).
+    
+-   **Comportement :** Tant qu'une touche est maintenue enfoncée, la position du moteur s'incrémente ou se décrémente en continu. Dès que la touche est relâchée, le mouvement s'arrête net.
+    
 
 ### Mécaniques Communes
 
