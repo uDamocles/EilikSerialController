@@ -28,8 +28,8 @@ This project requires Python 3 and a few external libraries. You can install the
 
 ```bash
 # Install required libraries
-pip3 install pyserial pynput
-pip3 install pyserial pynput pygame
+pip3 install pyserial pynput		# From v18
+pip3 install pyserial pynput pygame # From v19	
 ```
 _Note: `tty`, `termios`, `sys`, `time`, and `threading` are built-in Python libraries and do not require manual installation._
 
@@ -144,10 +144,10 @@ Ce projet nécessite Python 3 ainsi que quelques bibliothèques externes. Vous p
 
 Bash
 
-```
+```bash
 # Installation des librairies requises
-pip3 install pyserial pynput
-pip3 install pyserial pynput pygame
+pip3 install pyserial pynput 		# A partir de v18
+pip3 install pyserial pynput pygame # A partir de v19
 
 ```
 
