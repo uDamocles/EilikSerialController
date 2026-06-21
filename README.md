@@ -1,4 +1,5 @@
 
+
 # 🤖 Eilik Serial Controller
 
 ![Python](https://img.shields.io/badge/python-3.x-blue.svg)
@@ -28,6 +29,7 @@ This project requires Python 3 and a few external libraries. You can install the
 ```bash
 # Install required libraries
 pip3 install pyserial pynput
+pip3 install pyserial pynput pygame
 ```
 _Note: `tty`, `termios`, `sys`, `time`, and `threading` are built-in Python libraries and do not require manual installation._
 
@@ -90,6 +92,16 @@ This script allows for smooth, continuous, relative motor movement, much like a 
 -   **Input handling:** Uses the `pynput` library to listen for global keyboard events (Key Press and Key Release).
     
 -   **Behavior:** As long as a specific key is held down, the motor's position increments or decrements continuously. When the key is released, the movement stops immediately.
+
+### 3. Xbox 360 Controller (`v19.py`)
+
+Allows for intuitive, analog-style piloting using an Xbox 360 controller via `pygame`.
+
+-   **Sticks:** Left stick for Torso, Right stick for Head.
+    
+-   **Triggers/Bumpers:** Dedicated buttons/triggers for smooth arm control.
+    
+-   **Start:** Full reset of all motors to the middle position (1500).
     
 
 ### Shared Core Mechanics
@@ -135,6 +147,7 @@ Bash
 ```
 # Installation des librairies requises
 pip3 install pyserial pynput
+pip3 install pyserial pynput pygame
 
 ```
 
@@ -183,6 +196,7 @@ Le robot possède 4 servomoteurs adressables individuellement. La position centr
 
 ## 🧠 Fonctionnement du Contrôleur Interactif (V15)
 
+
 Le projet propose deux scripts de contrôle distincts pour s'adapter à différents styles de pilotage :
 
 ### 1. Positions Fixes (`v15.py`)
@@ -201,6 +215,16 @@ Ce script permet un mouvement fluide, continu et relatif des moteurs, à la mani
 -   **Gestion des entrées :** Utilise la bibliothèque `pynput` pour écouter les événements globaux du clavier (Pression et Relâchement de touche).
     
 -   **Comportement :** Tant qu'une touche est maintenue enfoncée, la position du moteur s'incrémente ou se décrémente en continu. Dès que la touche est relâchée, le mouvement s'arrête net.
+
+### 3. Manette Xbox 360 (`v19.py`)
+
+Permet un pilotage analogique immersif avec une manette Xbox 360 via la bibliothèque `pygame`.
+
+-   **Sticks :** Stick gauche pour le buste, stick droit pour la tête.
+    
+-   **Gâchettes/Bumpers :** Contrôle progressif des bras.
+    
+-   **START :** Réinitialisation complète de tous les moteurs à la position centrale (1500).
     
 
 ### Mécaniques Communes
